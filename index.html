@@ -1,52 +1,37 @@
-
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="pt-br">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Truco Online</title>
-  <link rel="icon" href="data:,">
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      background: #222;
-      color: #fff;
-      text-align: center;
-      margin: 0;
-      padding: 0;
-    }
-    .watermark {
-      position: fixed;
-      bottom: 10px;
-      right: 15px;
-      font-size: 12px;
-      color: #999;
-      opacity: 0.6;
-    }
-  </style>
+  <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
+  <script>
+    const socket = io("https://truco-3.onrender.com"); // servidor do render
+    socket.on("connect", () => {
+      console.log("Conectado ao servidor com ID:", socket.id);
+    });
+  </script>
 </head>
 <body>
-  <h1>Bem-vindo ao Truco Online!</h1>
-  <p>Abra o console (F12) para ver logs de conexão.</p>
+  <h1>TRUCO ONLINE</h1>
+  <form id="form">
+    <input type="text" id="nome" placeholder="Digite seu nome" required />
+    <input type="text" id="sala" placeholder="Número da sala" required />
+    <button type="submit">Entrar na Sala</button>
+  </form>
 
-  <!-- Marca d’água -->
-  <div class="watermark">by dm</div>
-
-  <!-- Socket.io CDN -->
-  <script src="https://cdn.socket.io/4.3.2/socket.io.min.js"></script>
   <script>
-    const socket = io("https://truco-online-1.onrender.com:10000");
-
-    socket.on("connect", () => {
-      console.log("✅ Conectado ao servidor com ID:", socket.id);
+    const form = document.getElementById("form");
+    form.addEventListener("submit", (e) => {
+      e.preventDefault();
+      const nome = document.getElementById("nome").value;
+      const sala = document.getElementById("sala").value;
+      socket.emit("entrarSala", { nome, sala });
     });
 
-    socket.on("disconnect", () => {
-      console.log("❌ Desconectado do servidor");
+    socket.on("mensagem", (msg) => {
+      console.log("Mensagem:", msg);
     });
-
-    // exemplo básico de emissão
-    // socket.emit("mensagem", "Olá servidor!");
   </script>
 </body>
 </html>
